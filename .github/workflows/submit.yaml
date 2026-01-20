@@ -1,0 +1,27 @@
+name: B12 Application Submission
+
+on:
+  workflow_dispatch:   # lets you run it manually
+  push:
+    branches:
+      - main            # runs on push to main
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run submission script
+        env:
+          B12_SIGNING_SECRET: ${{ secrets.B12_SIGNING_SECRET }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python submit_application.py
